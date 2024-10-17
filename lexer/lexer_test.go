@@ -6,7 +6,7 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := "=+(){},;"
+	input := `=+(){},;`
 
 	tests := []struct {
 		expectedType    token.TokenType
@@ -22,10 +22,10 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 	}
 
-	l := New(input)
+	lexer := New(input)
 
 	for i, tt := range tests {
-		token := l.NextToken()
+		token := lexer.NextToken()
 
 		if token.Type != tt.expectedType {
 			t.Fatalf("tests[%d] - incorrect token type. expected=%q, got=%q", i, tt.expectedType, token.Type)
