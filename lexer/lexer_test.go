@@ -106,3 +106,41 @@ func TestNextTokenCodeSnippet(t *testing.T) {
 		}
 	}
 }
+
+func TestNextTokenExtendedKeywords(t *testing.T) {
+	input := `!-/*5;
+	5 < 10 > 5;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.BANG, "!"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "5"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.GT, ">"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+	}
+
+	lexer := New(input)
+
+	for i, tt := range tests {
+		token := lexer.NextToken()
+
+		if token.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - incorrect token type. expected=%q, got=%q", i, tt.expectedType, token.Type)
+		}
+
+		if token.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - incorrect literal. expected=%q, got=%q", i, tt.expectedLiteral, token.Literal)
+		}
+	}
+}
