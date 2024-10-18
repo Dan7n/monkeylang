@@ -169,3 +169,38 @@ func TestNextTokenExtendedKeywords(t *testing.T) {
 		}
 	}
 }
+
+func TestNextTokenMultipleChars(t *testing.T) {
+	input := `10 == 10;
+	10 != 9;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.INT, "10"},
+		{token.EQ, "=="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "10"},
+		{token.NOT_EQ, "!="},
+		{token.INT, "9"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	lexer := New(input)
+
+	for i, tt := range tests {
+		token := lexer.NextToken()
+
+		if token.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - incorrect token type. expected=%q, got=%q", i, tt.expectedType, token.Type)
+		}
+
+		if token.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - incorrect literal. expected=%q, got=%q", i, tt.expectedLiteral, token.Literal)
+		}
+	}
+}
